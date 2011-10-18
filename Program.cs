@@ -11,8 +11,13 @@ namespace MD5Checker
 		static void Main(string[] args)
 		{
 			var filename = GetValue(args, 0);
-			if(string.IsNullOrEmpty(filename) || !File.Exists(filename))
-				throw new FileNotFoundException("Specify a file to check");
+			if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
+			{
+				PrintUsage();
+				Console.WriteLine("Press any key to continue");
+				Console.ReadKey();
+				return;
+			}
 
 			var expectedHash = GetValue(args, 1);
 
@@ -29,14 +34,16 @@ namespace MD5Checker
 				Console.Write(hashbyte);
 			}
 			Console.WriteLine();
+			Console.WriteLine();
 
 			if (string.IsNullOrEmpty(expectedHash))
 			{
+				Console.WriteLine("Press any key to exit");
 				Console.ReadKey();
 				return;
 			}
 
-			Console.WriteLine();
+			Console.WriteLine(expectedHash);
 			Console.WriteLine("is provided hash.");
 			Console.WriteLine();
 
@@ -45,7 +52,14 @@ namespace MD5Checker
 			else
 				Console.Write("Invalid, Hash does not match");
 
+			Console.WriteLine("Press any key to exit");
 			Console.ReadKey();
+		}
+
+		public static void PrintUsage()
+		{
+			Console.WriteLine(@"Usage:
+MD5Checker.exe <filename> [<expected hash>]");
 		}
 
 		public static string GetValue(string[] arg, int index, string defaultValue)
