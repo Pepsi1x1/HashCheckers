@@ -16,9 +16,6 @@ namespace MD5Checker
 
 			var expectedHash = GetValue(args, 1);
 
-			if (string.IsNullOrEmpty(expectedHash))
-				throw new ArgumentException("Specify an MD5 to verify against");
-
 			var cryptoService = new MD5CryptoServiceProvider();
 
 			var fileStream = new FileStream(filename, FileMode.Open);
@@ -32,6 +29,13 @@ namespace MD5Checker
 				Console.Write(hashbyte);
 			}
 			Console.WriteLine();
+
+			if (string.IsNullOrEmpty(expectedHash))
+			{
+				Console.ReadKey();
+				return;
+			}
+
 			Console.WriteLine();
 			Console.WriteLine("is provided hash.");
 			Console.WriteLine();
@@ -40,11 +44,18 @@ namespace MD5Checker
 				Console.WriteLine("Success, file is valid");
 			else
 				Console.Write("Invalid, Hash does not match");
+
+			Console.ReadKey();
 		}
 
-		public static string GetValue(string[] arg, int index, string defaultValue = "")
+		public static string GetValue(string[] arg, int index, string defaultValue)
 		{
-			return (arg == null || string.IsNullOrEmpty(arg[index])) ? defaultValue : arg[index];
+			return (arg == null || index >= arg.Length || string.IsNullOrEmpty(arg[index])) ? defaultValue : arg[index];
+		}
+
+		public static string GetValue(string[] arg, int index)
+		{
+			return (arg == null || index >= arg.Length) ? null : arg[index];
 		}
 	}
 }
