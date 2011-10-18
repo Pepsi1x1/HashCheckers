@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace MD5Checker
 {
@@ -10,8 +8,8 @@ namespace MD5Checker
 	{
 		static void Main(string[] args)
 		{
-			var filename = GetValue(args, 0);
-			if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
+			var filepath = GetValue(args, 0);
+			if (string.IsNullOrEmpty(filepath) || !File.Exists(filepath))
 			{
 				PrintUsage();
 				Console.WriteLine("Press any key to continue");
@@ -19,19 +17,26 @@ namespace MD5Checker
 				return;
 			}
 
+			var fileName = Path.GetFileName(filepath);
+
 			var expectedHash = GetValue(args, 1);
 
 			var cryptoService = new MD5CryptoServiceProvider();
-
-			var fileStream = new FileStream(filename, FileMode.Open);
-			var hash = cryptoService.ComputeHash(fileStream);
 			var fileHash = "";
-			Console.WriteLine("{0} hash is:", filename);
-			foreach (var b in hash)
+			Console.WriteLine("Loading: {0}", fileName);
+			Console.WriteLine();
+			using (var fileStream = new FileStream(filepath, FileMode.Open))
 			{
-				var hashbyte = string.Format("{0:X2}", b);
-				fileHash += hashbyte;
-				Console.Write(hashbyte);
+				Console.WriteLine("Computing hash...");
+				var hashBytes = cryptoService.ComputeHash(fileStream);
+
+				Console.WriteLine("{0} hash is:", fileName);
+				foreach (var b in hashBytes)
+				{
+					var hashbyte = string.Format("{0:X2}", b);
+					fileHash += hashbyte;
+					Console.Write(hashbyte);
+				}
 			}
 			Console.WriteLine();
 			Console.WriteLine();
