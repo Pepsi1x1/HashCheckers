@@ -20,25 +20,28 @@ namespace MD5Checker
 			var fileName = Path.GetFileName(filepath);
 
 			var expectedHash = GetValue(args, 1);
+            
+            var fileHash = "";
+            using (var cryptoService = new MD5CryptoServiceProvider())
+            {
+                
+                Console.WriteLine("Loading: {0}", fileName);
+                Console.WriteLine();
+                using (var fileStream = new FileStream(filepath, FileMode.Open))
+                {
+                    Console.WriteLine("Computing hash...");
+                    var hashBytes = cryptoService.ComputeHash(fileStream);
 
-			var cryptoService = new MD5CryptoServiceProvider();
-			var fileHash = "";
-			Console.WriteLine("Loading: {0}", fileName);
-			Console.WriteLine();
-			using (var fileStream = new FileStream(filepath, FileMode.Open))
-			{
-				Console.WriteLine("Computing hash...");
-				var hashBytes = cryptoService.ComputeHash(fileStream);
-
-				Console.WriteLine("{0} hash is:", fileName);
-				foreach (var b in hashBytes)
-				{
-					var hashbyte = string.Format("{0:X2}", b);
-					fileHash += hashbyte;
-					Console.Write(hashbyte);
-				}
-			}
-			Console.WriteLine();
+                    Console.WriteLine("{0} hash is:", fileName);
+                    foreach (var b in hashBytes)
+                    {
+                        var hashbyte = string.Format("{0:X2}", b);
+                        fileHash += hashbyte;
+                        Console.Write(hashbyte);
+                    }
+                }
+            }
+		    Console.WriteLine();
 			Console.WriteLine();
 
 			if (string.IsNullOrEmpty(expectedHash))
