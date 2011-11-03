@@ -11,7 +11,6 @@ namespace HashCheckers
         SHA256,
         SHA384,
         SHA512,
-        RC2
     }
 
     public class HashChecker
@@ -71,17 +70,12 @@ namespace HashCheckers
                     break;
                 case HashTypes.SHA384:
                     {
-                        cryptoService = new SHA256CryptoServiceProvider();
+                        cryptoService = new SHA384CryptoServiceProvider();
                     }
                     break;
                 case HashTypes.SHA512:
                     {
                         cryptoService = new SHA512CryptoServiceProvider();
-                    }
-                    break;
-                    case HashTypes.RC2:
-                    {
-                        cryptoService = new RC2CryptoServiceProvider();
                     }
                     break;
                 default:

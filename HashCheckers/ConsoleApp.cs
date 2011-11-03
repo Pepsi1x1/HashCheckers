@@ -6,7 +6,8 @@ namespace HashCheckers
     public enum ErrorCodes
     {
         InvalidUsage = -1,
-        Success = 0
+        Success = 0,
+        InvalidHash = 1
     }
     public static class ConsoleApp
     {
@@ -39,9 +40,14 @@ namespace HashCheckers
             Console.WriteLine();
 
             if (fileHash == expectedHash)
+            {
                 Console.WriteLine("Success, file is valid");
+            }
             else
+            {
                 Console.Write("Invalid, Hash does not match");
+                return ErrorCodes.InvalidHash;
+            }
 
             return ErrorCodes.Success;
         }
