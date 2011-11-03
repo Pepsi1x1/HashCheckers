@@ -39,7 +39,7 @@ namespace HashCheckers
             Console.WriteLine("is provided hash.");
             Console.WriteLine();
 
-            if (fileHash == expectedHash)
+            if (string.Equals(fileHash, expectedHash, StringComparison.OrdinalIgnoreCase))
             {
                 Console.WriteLine("Success, file is valid");
             }
