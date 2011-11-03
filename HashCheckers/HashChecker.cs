@@ -17,8 +17,8 @@ namespace HashCheckers
     {
         public static string GetFileHash(string fullPathToFile, HashTypes hashType)
         {
-            var bytes = File.ReadAllBytes(fullPathToFile);
-            return GetHash(bytes, hashType);
+            var stream = File.OpenRead(fullPathToFile);
+            return GetHash(stream, hashType);
         }
 
         public static string GetHash(string text, HashTypes hashType)
@@ -34,6 +34,16 @@ namespace HashCheckers
             if (cryptoService == null) return null;
 
             var hashBytes = cryptoService.ComputeHash(bytes);
+            return FormatHash(hashBytes);
+        }
+
+        public static string GetHash(FileStream stream, HashTypes hashType)
+        {
+            dynamic cryptoService = GetCryptoServiceProvider(hashType);
+            if (cryptoService == null) return null;
+
+            var hashBytes = cryptoService.ComputeHash(stream);
+            stream.Close();
             return FormatHash(hashBytes);
         }
 
