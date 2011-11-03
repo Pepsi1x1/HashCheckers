@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Security.Cryptography;
+using System.Reflection;
+using HashCheckers;
 
 namespace MD5Checker
 {
@@ -8,76 +9,19 @@ namespace MD5Checker
 	{
 		static void Main(string[] args)
 		{
-			var filepath = GetValue(args, 0);
-			if (string.IsNullOrEmpty(filepath) || !File.Exists(filepath))
-			{
-				PrintUsage();
-				Console.WriteLine("Press any key to continue");
-				Console.ReadKey();
-				return;
-			}
+		    var err = ConsoleApp.Run(args, HashTypes.MD5);
 
-			var fileName = Path.GetFileName(filepath);
+            if(err == ErrorCodes.InvalidUsage)
+                PrintUsage();
 
-			var expectedHash = GetValue(args, 1);
-            
-            var fileHash = "";
-            using (var cryptoService = new MD5CryptoServiceProvider())
-            {
-                
-                Console.WriteLine("Loading: {0}", fileName);
-                Console.WriteLine();
-                using (var fileStream = new FileStream(filepath, FileMode.Open))
-                {
-                    Console.WriteLine("Computing hash...");
-                    var hashBytes = cryptoService.ComputeHash(fileStream);
-
-                    Console.WriteLine("{0} hash is:", fileName);
-                    foreach (var b in hashBytes)
-                    {
-                        var hashbyte = string.Format("{0:X2}", b);
-                        fileHash += hashbyte;
-                        Console.Write(hashbyte);
-                    }
-                }
-            }
-		    Console.WriteLine();
-			Console.WriteLine();
-
-			if (string.IsNullOrEmpty(expectedHash))
-			{
-				Console.WriteLine("Press any key to exit");
-				Console.ReadKey();
-				return;
-			}
-
-			Console.WriteLine(expectedHash);
-			Console.WriteLine("is provided hash.");
-			Console.WriteLine();
-
-			if(fileHash == expectedHash)
-				Console.WriteLine("Success, file is valid");
-			else
-				Console.Write("Invalid, Hash does not match");
-
-			Console.WriteLine("Press any key to exit");
-			Console.ReadKey();
+            Console.WriteLine("Press any key to exit");
+            Console.ReadKey();
 		}
 
-		public static void PrintUsage()
+	    public static void PrintUsage()
 		{
-			Console.WriteLine(@"Usage:
-MD5Checker.exe <filename> [<expected hash>]");
-		}
-
-		public static string GetValue(string[] arg, int index, string defaultValue)
-		{
-			return (arg == null || index >= arg.Length || string.IsNullOrEmpty(arg[index])) ? defaultValue : arg[index];
-		}
-
-		public static string GetValue(string[] arg, int index)
-		{
-			return (arg == null || index >= arg.Length) ? null : arg[index];
+		    Console.WriteLine("Usage:");
+            Console.WriteLine("{0} <filename> [<expected hash>]", ExeUtil.GetFileNameForEntryExe());
 		}
 	}
 }
