@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using HashCheckers;
 
@@ -26,11 +27,10 @@ namespace GUIHashChecker
         private void OpenFile()
         {
             var dialogResult = openFileDialog1.ShowDialog();
-            if(dialogResult == DialogResult.OK)
+            if(dialogResult == DialogResult.OK && File.Exists(openFileDialog1.FileName))
             {
                 _fullPath = openFileDialog1.FileName;
                 toolStripStatusLabel1.Text = openFileDialog1.SafeFileName;
-                
             }
             else
             {
@@ -85,6 +85,27 @@ namespace GUIHashChecker
         private void clearExpectedLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             expectedHash.Clear();
+        }
+
+        private void hashCheckerForm_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void hashCheckerForm_DragDrop(object sender, DragEventArgs e)
+        {
+            var filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
+            if (File.Exists(filePaths[0]))
+                _fullPath = filePaths[0];
+
+            toolStripStatusLabel1.Text = Path.GetFileName(_fullPath);
         }
     }
 }
