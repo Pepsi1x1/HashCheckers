@@ -19,7 +19,7 @@ namespace HashCheckers
 
         public static string GetFileNameForEntryExe()
         {
-            return Path.GetFileName(Assembly.GetEntryAssembly().CodeBase);
+            return Path.GetFileName(Assembly.GetEntryAssembly().Location);
         }
     }
 }

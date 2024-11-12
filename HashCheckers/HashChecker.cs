@@ -17,7 +17,7 @@ namespace HashCheckers
     {
         public static string GetFileHash(string fullPathToFile, HashTypes hashType)
         {
-            var stream = File.OpenRead(fullPathToFile);
+            using var stream = File.OpenRead(fullPathToFile);
             return GetHash(stream, hashType);
         }
 
@@ -30,7 +30,7 @@ namespace HashCheckers
 
         public static string GetHash(byte[] bytes, HashTypes hashType)
         {
-            dynamic cryptoService = GetCryptoServiceProvider(hashType);
+            HashAlgorithm cryptoService = GetCryptoServiceProvider(hashType);
             if (cryptoService == null) return null;
 
             var hashBytes = cryptoService.ComputeHash(bytes);
@@ -43,7 +43,7 @@ namespace HashCheckers
             if (cryptoService == null) return null;
 
             var hashBytes = cryptoService.ComputeHash(stream);
-            stream.Close();
+
             return FormatHash(hashBytes);
         }
 
@@ -65,27 +65,27 @@ namespace HashCheckers
             {
                 case HashTypes.MD5:
                     {
-                        cryptoService = new MD5CryptoServiceProvider();
+                        cryptoService = MD5.Create();
                     }
                     break;
                 case HashTypes.SHA1:
                     {
-                        cryptoService = new SHA1CryptoServiceProvider();
+                        cryptoService = SHA1.Create();
                     }
                     break;
                 case HashTypes.SHA256:
                     {
-                        cryptoService = new SHA256CryptoServiceProvider();
+                        cryptoService = SHA256.Create();
                     }
                     break;
                 case HashTypes.SHA384:
                     {
-                        cryptoService = new SHA384CryptoServiceProvider();
+                        cryptoService = SHA384.Create();
                     }
                     break;
                 case HashTypes.SHA512:
                     {
-                        cryptoService = new SHA512CryptoServiceProvider();
+                        cryptoService = SHA512.Create();
                     }
                     break;
                 default:
