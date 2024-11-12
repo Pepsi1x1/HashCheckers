@@ -39,7 +39,7 @@ namespace HashCheckers
 
         public static string GetHash(FileStream stream, HashTypes hashType)
         {
-            dynamic cryptoService = GetCryptoServiceProvider(hashType);
+            HashAlgorithm cryptoService = GetCryptoServiceProvider(hashType);
             if (cryptoService == null) return null;
 
             var hashBytes = cryptoService.ComputeHash(stream);
@@ -47,7 +47,7 @@ namespace HashCheckers
             return FormatHash(hashBytes);
         }
 
-        private static string FormatHash(dynamic hashBytes)
+        private static string FormatHash(byte[] hashBytes)
         {
             string fileHash = null;
             foreach (var b in hashBytes)
@@ -58,9 +58,9 @@ namespace HashCheckers
             return fileHash;
         }
 
-        private static dynamic GetCryptoServiceProvider(HashTypes hashType)
+        private static HashAlgorithm GetCryptoServiceProvider(HashTypes hashType)
         {
-            dynamic cryptoService;
+            HashAlgorithm cryptoService;
             switch (hashType)
             {
                 case HashTypes.MD5:
